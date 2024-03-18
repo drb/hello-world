@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  hello-world:
+    container_name: com.pacosystems.helloworld
+    image: pacosystems/hello-world:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - TEST_ITEM=Hello
+      - PORT=3000
+    volumes:
+      - ./files:/application/files
+    build:
+      context:
+        ./

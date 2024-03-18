@@ -8,6 +8,13 @@
         border-top: 6px solid {{colour}};
         padding: 0px;
         margin: 0px;
+        transition: background-color 0.5s, color 0.5s;
+
+    }
+    body.killed {
+        background-color: #a82615;
+        border-top: none;
+        color:#fff;
     }
     div.container {
         width: 800px;
@@ -41,6 +48,29 @@
     a {
         color: inherit;
     }
+    a.btn {
+        border: 2px solid #666;
+        color: #333;
+        background-color:#fff;
+        border-radius: 3px;
+        padding: 12px;
+        text-decoration: none;
+    }
+    a.btn:hover {
+        background-color: #333;
+        color:#fff;
+        border-color: #000;
+    }
+    ul {
+        margin-top: 30px;
+        padding: 0;
+    }
+    li {
+        margin-right: 20px;
+        list-style-type: none;
+        padding: 0;
+        float: left;
+    }
     pre {
         font-family: 'Inconsolata', monospace;
         background-color: #F5F5F5;
@@ -48,14 +78,61 @@
         border-radius: 16px;
         margin-bottom: 22px;
     }
+    body.killed pre {
+        background-color: black;
+        color: #fff;
+    }
+    body.killed h1 {
+        /* strike */
+        text-decoration: line-through;
+    }
     </style>
-    <title>Hello. {{instance}}</title>
+    <script>
+        // sends a signal to the backend to make the container unstable. this will cause the container to crash but 
+        // within a random time frame.
+        function unstable() {
+            // kill interval should be somewhere between 0 and 60 seconds
+            const killInterval = Math.floor(Math.random() * 60000);
+                  killTime = Date.now() + killInterval;
+            // create a timeout to send the signal to the backend
+            setTimeout(() => {
+                kill();
+            }, killInterval);
+
+            // create an interval to update the button text. this will show how many seconds are left until the container crashes.
+            const interval = setInterval(() => {
+                const counter = document.getElementById('unstable-counter');
+                // time left is the difference between now and now + killInterval
+                const timeLeft = Math.floor((killTime - Date.now()) / 1000);
+                counter.innerText = `Unstable mode 🥴 (${timeLeft}s)`;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+            return false;
+        }
+        // gives the kill signal to the backend. this will terminate the container.
+        function kill() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/state/kill", true);
+            xhr.send();
+            // remove the #controls section to prevent further actions
+            document.getElementById('controls').remove();
+            // add the killed class to the body
+            document.body.classList.add('killed');
+            //
+            return false;
+        }
+    </script>
+    <title>Hello. {{instance}}</title> 
+    <meta charset="utf-8">
 </head>
 <body>
     
 <div class="container">
     <section class="paco">
-        <span><a href="http://pacosystems.com">PACO!</a></span>
+        <span><a href="https://pacosystems.com">PACO!</a></span> 
     </section>
     <h1>Hello.</h1>
     <h3>Instance.</h3>
@@ -66,9 +143,16 @@
 <strong>LOCAL TIME:</strong> {{localTime}}
 <strong>UTC:</strong> {{utcTime}}
 <strong>UPTIME:</strong> {{uptime}}</pre>
-</pre>
     <h3>Environment.</h3>
     <pre>{{{env}}}</pre>
+    <div id="controls">
+        <h3>Controls.</h3>
+        <p>These controls will put the container into an <em>Unstable</em> mode (can crash unpredictably) or <em>Kill</em> mode (terminates the container). These modes can be used to test your Kubernetes cluster's ability to restore services.</p>
+        <ul>
+            <li><a class="btn" href="" onclick="return unstable();" id="unstable-counter">Unstable mode 🥴</a></li>
+            <li><a class="btn" href="" onclick="return kill();">Kill instance ☠️</a></li>
+        </ul>
+    </div>
 </div>
 </body>
 </html>
