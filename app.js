@@ -62,6 +62,8 @@ class HelloWorldServer {
         // Parse the request URL
         const url = new URL(request.url, `http://${request.headers.host}`);
         const pathname = url.pathname;
+        const hostname = os.hostname();
+        const instance = this.instance;
 
         // Define routes
         if (pathname === '/state/kill') {
@@ -69,6 +71,8 @@ class HelloWorldServer {
             // You can add logic here to gracefully shut down your server
             response.writeHead(200, {'Content-Type': 'text/plain'});
             response.end('Shutting down server...');
+            //
+            console.log(`Shutting down server ${hostname} / ${instance} from kill request...`);
             // send a SIGINT to the process
             process.kill(process.pid, 'SIGINT');
 
@@ -76,8 +80,8 @@ class HelloWorldServer {
             // Default route
             let data = {
                 platform:   os.platform(),
-                hostname:   os.hostname(),
-                instance:   this.instance,
+                hostname,
+                instance,
                 colour:     this.colour,
                 env:        this.getEnvironment(),
                 localTime:  moment().format(),

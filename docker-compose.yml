@@ -6,8 +6,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - TEST_ITEM=Hello
+      # change this to your own value
       - PORT=3000
+      # any environment variable you want to pass to the container - these are displayed in the app so are useful for debugging
+      - TEST_ITEM=Hello World
     volumes:
       - ./files:/application/files
     build:

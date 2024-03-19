@@ -1,7 +1,5 @@
 # alpine image
-# FROM node:alpine
 FROM node:20.11.1-alpine3.19
-
 
 # maintainer
 LABEL maintainer Dave Bullough <hello@pacosystems.com>

@@ -1,12 +1,12 @@
 {
   "name": "hello-world",
   "version": "1.0.0",
-  "description": "Simple hello world",
+  "description": "Simple hello world container that can help simulate unstable environments",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Dave Bullough <hello@pacosystems.com>",
   "license": "ISC",
   "dependencies": {
     "handlebars": "^4.7.8",
